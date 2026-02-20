@@ -14,10 +14,11 @@ FROM nginx:alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf.template
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 
-RUN /bin/sh -c 'export BACKEND_URL=${BACKEND_URL:-http://localhost:8000} && envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf'
+RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
